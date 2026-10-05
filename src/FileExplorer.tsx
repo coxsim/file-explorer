@@ -10,7 +10,26 @@ interface DirectoryData extends FileData {
 }
 
 const FileNode : React.FC<{ file: FileData }> = ({ file }) => {
-    return <button>{file.name}</button>;
+    const [renaming, setRenaming] = React.useState<boolean>(false);
+    const [updatedName, setUpdatedName] = React.useState<string>(file.name);
+    return renaming ? (
+        <>
+            <input value={updatedName} onChange={e => setUpdatedName(e.target.value)} onSubmit={_ => {
+                file.name = updatedName;
+                setRenaming(false)
+            }}/>
+            <button onClick={_ => {
+                file.name = updatedName;
+                setRenaming(false);
+            }}>Save</button>
+            <button onClick={_ => {
+                setUpdatedName(file.name);
+                setRenaming(false);
+            }}>Cancel</button>
+        </>
+    ) : (
+        <button onClick={_ => setRenaming(!renaming)}>{file.name}</button>
+    );
 };
 
 const DirectoryNode : React.FC<{ directory: DirectoryData }> = ({ directory }) => {
